@@ -29,7 +29,7 @@ With the abundance of alternatives in determining the variable importance, analy
 This WebApps is using an optimization approach to obtain the rank of the importance of the explanatory variables based on several different VIM’s.  The basic idea is to find an arrangement of ranks that agrees to all VIM’s under interest as much as possible.  We employ genetic algorithm and simulated annealing methodology to result that optimal arrangement.  By applying this optimal approach, the analyst would end up with a single rank and be easier to conclude the result or to use it for a follow-up analysis.  Therefore, it sounds to unify several VIM’s into a single measurement.
 
 ### II. WebApps Overview 
-![](OVIMP Overview.gif)
+![ Alt text](OVIMP Overview.gif) / ! [](OVIMP Overview.gif)
 
 You can see the apps on this link: http://shiny.stat.ipb.ac.id/bagusco/ovimp/
 
