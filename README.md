@@ -8,8 +8,8 @@
 - Rahma Anisa
 
 #### Table of content:
-* [Intorduction](https://github.com/abdullahfadly/GA_SD#Introduction)
-* [1. Program for calculating methods](https://github.com/abdullahfadly/GA_SD#1-Program-for-calculating-methods)
+* [Intorduction]
+* [1. Program for calculating methods]
 * [2. Create Constraints](https://github.com/abdullahfadly/FGA_DB2_Kel6#2-create-constraints)
 * [3. Create Views](https://github.com/abdullahfadly/FGA_DB2_Kel6#3-create-views)
 * [4. Create Sequences](https://github.com/abdullahfadly/FGA_DB2_Kel6#4-create-sequences)
