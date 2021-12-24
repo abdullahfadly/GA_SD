@@ -9,10 +9,9 @@
 
 #### Table of content:
 * I. Intorduction
-* II. Web Apps Overview
-* III. Program for calculating methods
-* IV. Programs for displaying visualizations
-* V. Program to create User Interface and Server
+* II. Program for calculating methods
+* III. Programs for displaying visualizations
+* IV. Program to create User Interface and Server
 
 
 ## I. Introduction
@@ -28,13 +27,9 @@ With the abundance of alternatives in determining the variable importance, analy
 
 This WebApps is using an optimization approach to obtain the rank of the importance of the explanatory variables based on several different VIM’s.  The basic idea is to find an arrangement of ranks that agrees to all VIM’s under interest as much as possible.  We employ genetic algorithm and simulated annealing methodology to result that optimal arrangement.  By applying this optimal approach, the analyst would end up with a single rank and be easier to conclude the result or to use it for a follow-up analysis.  Therefore, it sounds to unify several VIM’s into a single measurement.
 
-### II. WebApps Overview 
-
-![Uploading OVIMP Overview.gif…]()
-
 You can see the apps on this link: http://shiny.stat.ipb.ac.id/bagusco/ovimp/
 
-### III. Program for calculating methods (stored in METODE.R)
+### II. Program for calculating methods (stored in METODE.R)
 ```R
 iv <- function(data, inputvary){
 
@@ -67,7 +62,7 @@ proximity = TRUE, importance = TRUE, nodesize =
 }
 ```
 
-###IV. Programs for displaying visualizations (stored in PLOT.R)
+###III. Programs for displaying visualizations (stored in PLOT.R)
 ```R
 plotgab <- function(data){
  colnames(data) <- c("Variabel", "IV", "IG", "MDA", "MDG", "GA")
@@ -180,7 +175,7 @@ Decrease Gini')+
 ```
 
 
-###V. Program to create User Interface and Server (stored in app.R)
+###IV. Program to create User Interface and Server (stored in app.R)
 ```R
 library(shiny)
 library("shinythemes")
