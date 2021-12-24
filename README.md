@@ -1,39 +1,68 @@
-# Minimarket ORACLE Database
-#### Disusun oleh FGA2021-UI-Database2-Kel6:
+# Optimal Unified Variable Importance WebApps Using Rshiny
+#### Disusun oleh:
 - Abdullah Fadly
-- Hendrika Anggriawan
-- Dio Tri Ananda
+- Achmad Ismail Mufrodi
+- Retno Wahyuningsih
+- Bagus Sartono
+- Farit M. Efendi
+- Rahma Anisa
 
 #### Table of content:
-* [Pendahuluan](https://github.com/hendrikaang/FGA2021-UI-Database2-Kel6#pendahuluan)
-* [1. Create Tables](https://github.com/hendrikaang/FGA2021-UI-Database2-Kel6#1-create-tables#1-create-tables)
-* [2. Create Constraints](https://github.com/hendrikaang/FGA2021-UI-Database2-Kel6#2-create-constraints)
-* [3. Create Views](https://github.com/hendrikaang/FGA2021-UI-Database2-Kel6#3-create-views)
-* [4. Create Sequences](https://github.com/hendrikaang/FGA2021-UI-Database2-Kel6#4-create-sequences)
-* [5. Add Data to Tables](https://github.com/hendrikaang/FGA2021-UI-Database2-Kel6#5-add-data-to-tables)
-* [6. Create Indexes](https://github.com/hendrikaang/FGA2021-UI-Database2-Kel6#6-create-indexes)
-* [7. Create Synonyms](https://github.com/hendrikaang/FGA2021-UI-Database2-Kel6#7-create-synonyms)
-* [8. Test The Database](https://github.com/hendrikaang/FGA2021-UI-Database2-Kel6#8-test-database)
+* [Intorduction](https://github.com/abdullahfadly/FGA_DB2_Kel6#pendahuluan)
+* [1. Create Tables](https://github.com/abdullahfadly/FGA_DB2_Kel6#1-create-tables#1-create-tables)
+* [2. Create Constraints](https://github.com/abdullahfadly/FGA_DB2_Kel6#2-create-constraints)
+* [3. Create Views](https://github.com/abdullahfadly/FGA_DB2_Kel6#3-create-views)
+* [4. Create Sequences](https://github.com/abdullahfadly/FGA_DB2_Kel6#4-create-sequences)
+* [5. Add Data to Tables](https://github.com/abdullahfadly/FGA_DB2_Kel6#5-add-data-to-tables)
+* [6. Create Indexes](https://github.com/abdullahfadly/FGA_DB2_Kel6#6-create-indexes)
+* [7. Create Synonyms](https://github.com/abdullahfadly/FGA_DB2_Kel6#7-create-synonyms)
+* [8. Test The Database](https://github.com/abdullahfadly/FGA_DB2_Kel6#8-test-database)
 
 ## Pendahuluan
-Bagi perusahaan atau organisasi, keberadaan database (basis data) memiliki fungsi dan peran penting dalam mendukung proses bisnis agar lebih efektif dan efisien. Sebab, database merupakan salah satu komponen utama dalam sistem informasi, yang merupakan dasar dalam menyediakan suatu informasi bagi para pemakai (user).
+One primary question in a statistical modeling, as well as in a supervised machine learning study, is about the contribution of each explanatory variable in the model.  The topic about the variable importance has been received a huge consideration especially when the analyst was interested in revealing which variables are the most important in affecting the change in the response variable of the regression model or determining the class of the response variable of the classification model.  This present paper would focus on a binary classification problem, rather than regression model, therefore the response variable has only two classes.
 
-Secara sederhana, database dapat diartikan sebagai kumpulan berbagai data dan informasi yang tersimpan dan tersusun di dalam komputer secara sistematik yang dapat diperiksa, diolah dengan menggunakan program komputer untuk mendapatkan informasi dari database tersebut. Perangkat lunak yang digunakan untuk mengelola dan memanggil database disebut dengan sistem Database Management System (DBMS).
+There are several different approaches to identify the importance of an explanatory variables in a classification model.  We call the methods to measure of this as the variable importance measurements (VIM’s).   Even though it is not completely true, some discussions about variable importance is overlapping with the discussions on variables/features selection.  It is because in a certain circumstance, the result of identifying variable importance could be used as an input to do the variable selection.
 
-Pemanfaatan dan pengolahan database yang baik di perusahaan, misalnya perusahaan ritel minimarket bisa membantu kasir lebih cepat bekerja mencari jumlah barang yang ada atau juga mencari harga barang yang dijual. Begitu juga bagi admin, dengan database bisa membuat pekerjaan lebih mudah seperti mencari stock barang yang paling dicari dan lainnya.
+The first type of the VIM approaches is the filter method that was computed prior to the model development step.  This includes Information Gain (IG) dan Information Value (IV).  The more importance the variable, the higher values for both measurements.  The IG and IV were calculated independently among explanatory variables, in the meaning that the process to obtain the IG and IV values for a certain explanatory variable Xi would not involve other explanatory variables Xj, j != i.
 
-Secara garis besar, tahapan dalam membuat database diawali dengan memahami bisnis rule perusahaan, lalu membuat model database design, diakhiri dengan membuat implementasi program database secara fisik.
+The second type of the approaches is the one which computed when the model has been developed. This includes Mean Decrease Accuracy (MDA) and Mean Decrease Gini (MDG). MDA and MDG are variable importance values generated through the Random Forest classification process. 
 
-Pada laporan ini, akan dijabarkan langkah lebih detil pada tahapan pembuatan program implementasi program database yang diantaranya adalah pembuatan table (CREATE TABLE), penambahan constraint, penginputan data, membuat VIEW, menambahkan sequence, index, dan synonym, serta melakukan testing.
+With the abundance of alternatives in determining the variable importance, analysts and researchers may get confuse in using the result of one of them.  It is well known that four methods of VIM may come up with different order of importance.
 
+This WebApps is using an optimization approach to obtain the rank of the importance of the explanatory variables based on several different VIM’s.  The basic idea is to find an arrangement of ranks that agrees to all VIM’s under interest as much as possible.  We employ genetic algorithm and simulated annealing methodology to result that optimal arrangement.  By applying this optimal approach, the analyst would end up with a single rank and be easier to conclude the result or to use it for a follow-up analysis.  Therefore, it sounds to unify several VIM’s into a single measurement.
 
-### 1. Create Tables
+### 1. Program for calculating methods (stored in METODE.R)
 **CREATE TABLE** adalah perintah yang digunakan untuk membuat sebuah tabel di database. Format penulisan kueri dalam membuat tabel adalah sebagai berikut:
-```sql
-CREATE TABLE table_name
-  (column data type [DEFAULT expression],
-  column data type [DEFAULT expression],
-  ……[ ] )
+```R
+iv <- function(data, inputvary){
+
+ infvalue <- create_infotables(data=data, y = inputvary,
+ parallel = FALSE)
+ data.frame(infvalue$Summary)
+}
+ig <- function(data, inputvary){
+ varx <- setdiff(colnames(data),inputvary)
+ infogain <- information.gain(formula = as.formula(paste(inputvary, "~",
+paste(varx, collapse = "+"))), data = data, unit = 'log2')
+ peubah <- rownames(infogain)
+ Variable <- peubah[order(infogain, decreasing = TRUE)]
+ IG <- infogain[order(infogain, decreasing = TRUE),]
+ cbind(Variable, IG)
+}
+mdgmda <- function(data, inputvary){
+
+ Variable <- setdiff(colnames(data),inputvary)
+ set.seed(43)
+ model.rf <- randomForest(formula = as.formula(paste(inputvary," ~ ",
+
+paste(Variable,collapse="+"))),
+ data = data,
+proximity = TRUE, importance = TRUE, nodesize =
+5)
+ a <- importance(model.rf)
+ b <- a[,3:4]
+ data.frame(Variable, b)
+}
 ```
 Pada ERD perusahaan ritel minimarket, terdapat 11 entitas yang saling berhubungan, sehingga dibutuhkan 11 tabel pada implementasi program. Berikut adalah gambar ERD yang akan diimplementasikan.
 ![ERD image](https://github.com/hendrikaang/FGA2021-UI-Database2-Kel6/blob/main/ERD.PNG)
