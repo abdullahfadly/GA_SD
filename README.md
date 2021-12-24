@@ -8,8 +8,8 @@
 - Rahma Anisa
 
 #### Table of content:
-* [Intorduction](https://github.com/abdullahfadly/FGA_DB2_Kel6#pendahuluan)
-* [1. Create Tables](https://github.com/abdullahfadly/FGA_DB2_Kel6#1-create-tables#1-create-tables)
+* [Intorduction](https://github.com/abdullahfadly/FGA_DB2_Kel6#Introduction)
+* [1. Create Tables](https://github.com/abdullahfadly/FGA_DB2_Kel6#1-Program-for-calculating-methods)
 * [2. Create Constraints](https://github.com/abdullahfadly/FGA_DB2_Kel6#2-create-constraints)
 * [3. Create Views](https://github.com/abdullahfadly/FGA_DB2_Kel6#3-create-views)
 * [4. Create Sequences](https://github.com/abdullahfadly/FGA_DB2_Kel6#4-create-sequences)
@@ -18,7 +18,7 @@
 * [7. Create Synonyms](https://github.com/abdullahfadly/FGA_DB2_Kel6#7-create-synonyms)
 * [8. Test The Database](https://github.com/abdullahfadly/FGA_DB2_Kel6#8-test-database)
 
-## Pendahuluan
+## Introduction
 One primary question in a statistical modeling, as well as in a supervised machine learning study, is about the contribution of each explanatory variable in the model.  The topic about the variable importance has been received a huge consideration especially when the analyst was interested in revealing which variables are the most important in affecting the change in the response variable of the regression model or determining the class of the response variable of the classification model.  This present paper would focus on a binary classification problem, rather than regression model, therefore the response variable has only two classes.
 
 There are several different approaches to identify the importance of an explanatory variables in a classification model.  We call the methods to measure of this as the variable importance measurements (VIM’s).   Even though it is not completely true, some discussions about variable importance is overlapping with the discussions on variables/features selection.  It is because in a certain circumstance, the result of identifying variable importance could be used as an input to do the variable selection.
