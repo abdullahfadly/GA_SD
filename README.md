@@ -1,5 +1,5 @@
 # Optimal Unified Variable Importance WebApps Using Rshiny
-#### Disusun oleh:
+#### Arranged by:
 - Abdullah Fadly
 - Achmad Ismail Mufrodi
 - Retno Wahyuningsih
@@ -8,15 +8,11 @@
 - Rahma Anisa
 
 #### Table of content:
-* [Intorduction]
-* [1. Program for calculating methods]
-* [2. Create Constraints](https://github.com/abdullahfadly/FGA_DB2_Kel6#2-create-constraints)
-* [3. Create Views](https://github.com/abdullahfadly/FGA_DB2_Kel6#3-create-views)
-* [4. Create Sequences](https://github.com/abdullahfadly/FGA_DB2_Kel6#4-create-sequences)
-* [5. Add Data to Tables](https://github.com/abdullahfadly/FGA_DB2_Kel6#5-add-data-to-tables)
-* [6. Create Indexes](https://github.com/abdullahfadly/FGA_DB2_Kel6#6-create-indexes)
-* [7. Create Synonyms](https://github.com/abdullahfadly/FGA_DB2_Kel6#7-create-synonyms)
-* [8. Test The Database](https://github.com/abdullahfadly/FGA_DB2_Kel6#8-test-database)
+* Intorduction
+* 1. Program for calculating methods
+* 2. Programs for displaying visualizations
+* 3. Program to create User Interface and Server
+* 4. Web Apps Overview
 
 ## Introduction
 One primary question in a statistical modeling, as well as in a supervised machine learning study, is about the contribution of each explanatory variable in the model.  The topic about the variable importance has been received a huge consideration especially when the analyst was interested in revealing which variables are the most important in affecting the change in the response variable of the regression model or determining the class of the response variable of the classification model.  This present paper would focus on a binary classification problem, rather than regression model, therefore the response variable has only two classes.
@@ -32,7 +28,6 @@ With the abundance of alternatives in determining the variable importance, analy
 This WebApps is using an optimization approach to obtain the rank of the importance of the explanatory variables based on several different VIM’s.  The basic idea is to find an arrangement of ranks that agrees to all VIM’s under interest as much as possible.  We employ genetic algorithm and simulated annealing methodology to result that optimal arrangement.  By applying this optimal approach, the analyst would end up with a single rank and be easier to conclude the result or to use it for a follow-up analysis.  Therefore, it sounds to unify several VIM’s into a single measurement.
 
 ### 1. Program for calculating methods (stored in METODE.R)
-**CREATE TABLE** adalah perintah yang digunakan untuk membuat sebuah tabel di database. Format penulisan kueri dalam membuat tabel adalah sebagai berikut:
 ```R
 iv <- function(data, inputvary){
 
@@ -64,493 +59,651 @@ proximity = TRUE, importance = TRUE, nodesize =
  data.frame(Variable, b)
 }
 ```
-Pada ERD perusahaan ritel minimarket, terdapat 11 entitas yang saling berhubungan, sehingga dibutuhkan 11 tabel pada implementasi program. Berikut adalah gambar ERD yang akan diimplementasikan.
-![ERD image](https://github.com/hendrikaang/FGA2021-UI-Database2-Kel6/blob/main/ERD.PNG)
 
-Berikut ini merupakan kode yang digunakan untuk membuat tabel yang dibutuhkan untuk mengimplementasikan ERD di atas.
-#### Membuat tabel r_locations
-```sql
-CREATE TABLE r_LOCATIONS (
-  postal_code NUMBER(5) CONSTRAINT r_LOCATIONS_pk PRIMARY KEY,
-  district VARCHAR2(50) NOT NULL,
-  regency VARCHAR2(50) NOT NULL,
-  province VARCHAR2(50) NOT NULL
-);
-```
-#### Membuat tabel r_customers
-```sql
-CREATE TABLE r_CUSTOMERS (
-  customer_id NUMBER(5) CONSTRAINT r_customers_pk PRIMARY KEY,
-  NIK NUMBER(16) NOT NULL,
-  phone_number NUMBER(13) NOT NULL,
-  customer_name VARCHAR2(50) NOT NULL,
-  address VARCHAR2(100) NOT NULL,
-  email VARCHAR2(50),
-  point INTEGER,
-  postal_code NUMBER(5) NOT NULL
-);
-```
-#### Membuat tabel r_stores
-```sql
-CREATE TABLE r_STORES (
-  store_id NUMBER(5) CONSTRAINT r_STORES_pk PRIMARY KEY,
-  phone_number NUMBER(13) NOT NULL,
-  store_name VARCHAR2(50) NOT NULL,
-  address VARCHAR2(100) NOT NULL,
-  NPWP NUMBER(15),
-  postal_code NUMBER(5) NOT NULL
-);
-```
-#### Membuat tabel r_employees
-```sql
-CREATE TABLE r_EMPLOYEES (
-  employee_id NUMBER(5) CONSTRAINT r_EMPLOYEES_pk PRIMARY KEY,
-  NIK NUMBER(16) NOT NULL,
-  phone_number NUMBER(13) NOT NULL,
-  employee_name VARCHAR2(50) NOT NULL,
-  address VARCHAR2(100) NOT NULL,
-  email VARCHAR2(50) NOT NULL,
-   bank_account VARCHAR2(30) NOT NULL,
-  postal_code NUMBER(5) NOT NULL,
-  store_id NUMBER(5) NOT NULL
-);
-```
-#### Membuat tabel r_transactions
-```sql
-CREATE TABLE r_TRANSACTIONS (
-  transaction_id NUMBER(5,0) CONSTRAINT r_trx_pk PRIMARY KEY,
-  transaction_date DATE NOT NULL,
-  payment_type VARCHAR2(20) NOT NULL,
-  total_transaction INTEGER NOT NULL,
-  customer_id NUMBER(5,0),
-  employee_id NUMBER(5,0)
-);
-```
-#### Membuat tabel r_salary_histories
-```sql
-CREATE TABLE r_SALARY_HISTORIES (
-  start_date_salary DATE NOT NULL,
-  end_date_salary DATE,
-  wages INTEGER NOT NULL,
-  description VARCHAR2(50),
-  PIC VARCHAR2(50) NOT NULL,
-  employee_id NUMBER(5) NOT NULL
-  CONSTRAINT r_slr_start_emps_id_pk PRIMARY KEY(start_date_salary,employee_id)
-);
-```
-#### Membuat tabel r_products
-```sql
-CREATE TABLE r_PRODUCTS (
-  product_id NUMBER(15) CONSTRAINT r_products_pk PRIMARY KEY,
-  product_name VARCHAR2(50) NOT NULL,
-  price DECIMAL(10,2) NOT NULL,
-  stock INTEGER NOT NULL,
-  expire_date DATE,
-  store_id NUMBER(5) NOT NULL
-);
-```
-#### Membuat tabel r_items
-```sql
-CREATE TABLE r_ITEMS (
-  transaction_id NUMBER(5) NOT NULL,
-  product_id NUMBER(15) NOT NULL,
-  quantity INTEGER
-  CONSTRAINT r_itm_trx_prod_id_pk PRIMARY KEY(transaction_id,product_id)
-);
-```
-#### Membuat tabel r_suppliers
-```sql
-CREATE TABLE r_SUPPLIERS (
-  supplier_id NUMBER(5) CONSTRAINT r_suppliers_pk PRIMARY KEY,
-  phone_number NUMBER(13) NOT NULL,
-  supplier_name VARCHAR2(50) NOT NULL,
-  email VARCHAR2(50) NOT NULL,
-  address VARCHAR2(100) NOT NULL,
-  postal_code NUMBER(5) NOT NULL
-);
-```
-#### Membuat tabel r_supplies
-```sql
-CREATE TABLE r_SUPPLIES (
-  supply_date DATE NOT NULL,
-  supplier_id NUMBER(5) NOT NULL,
-  product_id NUMBER(15) NOT NULL,
-  quantity INTEGER
-);
-```
-#### Membuat tabel r_discount_histories
-```sql
-CREATE TABLE r_DISCOUNT_HISTORIES (
-  start_date_discount DATE NOT NULL,
-  end_date_discount DATE,
-  percentage DECIMAL(4,2) NOT NULL,
-  product_id NUMBER(15) NOT NULL
-  CONSTRAINT r_disc_start_prod_id_pk PRIMARY KEY(start_date_discount,product_id)
-);
+###2. Programs for displaying visualizations (stored in PLOT.R)
+```R
+plotgab <- function(data){
+ colnames(data) <- c("Variabel", "IV", "IG", "MDA", "MDG", "GA")
+ iv <- data[,1:2]
+ ig <- data[,c(1,3)]
+ mda <- data[,c(1,4)]
+ mdg <- data[,c(1,5)]
+
+ iv$piv <- as.integer(rank(iv$IV, ties.method ='average'))
+ ig$pig <- as.integer(rank(ig$IG, ties.method ='average'))
+ mda$pmda <- as.integer(rank(mda$MDA, ties.method ='average'))
+ mdg$pmdg <- as.integer(rank(mdg$MDG, ties.method ='average'))
+
+
+ drank <-
+as.data.frame(cbind(iv$Variabel,iv$piv,ig$pig,mda$pmda,mdg$pmdg,data$GA))
+ colnames(drank) <- c('Variabel','IV','IG','MDA','MDG','GA')
+
+ long <- melt(setDT(drank), id.vars = c('Variabel','GA'), variable.name =
+'Metode')
+ long$value <- as.numeric(long$value)
+ long$GA <- as.numeric(as.character(long$GA))
+
+
+ ggplot(long, aes(x = reorder(Variabel,GA), fill = Metode, weight =
+value)) +
+ geom_bar(position = "dodge") +
+ scale_fill_viridis_d(option = "plasma") +
+ theme_minimal() +
+ labs(x='Variabel',y='Peringkat Kepentingan', title = 'Diagram
+Kepentingan Variabel')+
+ theme(axis.text.x = element_text(angle = 45, size = 12),
+ axis.text.y = element_blank())
+}
+plotiv <- function(data){
+ IV <- data[,2]
+ Variable <- data[,1]
+ GA <- data[,6]
+ ggplot(data, aes(x=reorder(Variable,GA), y=IV)) +
+ geom_segment( aes(x=reorder(Variable,GA), xend=reorder(Variable,GA),
+y=0, yend=IV), color="grey") +
+ geom_point( color="blue", size=6) +
+ theme_light() +
+ theme(
+ panel.grid.major.x = element_blank(),
+ panel.border = element_blank(),
+ axis.ticks.x = element_blank()
+ ) +
+ labs(x='Variabel',y='IV', title = 'Diagram Information Value')+
+ theme(axis.text.x = element_text(angle = 45, size = 12))
+}
+plotig <- function(data){
+ IG <- data[,3]
+ IG <- as.numeric(IG)
+ Variable <- data[,1]
+ GA <- data[,6]
+ ggplot(data, aes(x=reorder(Variable,GA), y=IG)) +
+ geom_segment( aes(x=reorder(Variable,GA), xend=reorder(Variable,GA),
+y=0, yend=IG), color="grey") +
+ geom_point( color="purple", size=6) +
+ theme_light() +
+ theme(
+ panel.grid.major.x = element_blank(),
+ panel.border = element_blank(),
+ axis.ticks.x = element_blank()
+ ) +
+ labs(x='Variabel',y='Information Gain', title = 'Diagram Information
+Gain')+
+ theme(axis.text.x = element_text(angle = 45, size = 12))
+}
+plotmda <- function(data){
+
+ MDA <- data[,4]
+ Variable <- data[,1]
+ GA <- data[,6]
+ ggplot(data, aes(x=reorder(Variable,GA), y=MDA)) +
+ geom_segment( aes(x=reorder(Variable,GA), xend=reorder(Variable,GA),
+y=0, yend=MDA), color="grey") +
+ geom_point( color="orange", size=6) +
+ theme_light() +
+ theme(
+ panel.grid.major.x = element_blank(),
+ panel.border = element_blank(),
+ axis.ticks.x = element_blank()
+ ) +
+ labs(x='Variabel',y='Mean Decrease Accuracy', title = 'Diagram Mean
+Decrease Accuracy')+
+ theme(axis.text.x = element_text(angle = 45, size = 12))
+}
+plotmdg <- function(data){
+
+ MDG <- data[,5]
+ Variable <- data[,1]
+ GA <- data[,6]
+ ggplot(data, aes(x=reorder(Variable,GA), y=MDG)) +
+ geom_segment( aes(x=reorder(Variable,GA), xend=reorder(Variable,GA),
+y=0, yend=MDG), color="grey") +
+ geom_point( color="yellow", size=6) +
+ theme_light() +
+ theme(
+ panel.grid.major.x = element_blank(),
+ panel.border = element_blank(),
+ axis.ticks.x = element_blank()
+ ) +
+ labs(x='Variabel',y='Mean Decrease Gini', title = 'Diagram Mean
+Decrease Gini')+
+ theme(axis.text.x = element_text(angle = 45, size = 12))
+
+}
 ```
 
 
-### 2. Create Constraints
-Constraint di SQL adalah sebuah opsi atau atribut yang berfungsi untuk membatasi nilai setiap data yang akan dimasukkan dalam suatu kolom di dalam tabel database SQL. Ini memastikan keakuratan dan keandalan data dalam database. Batasan bisa berupa level kolom atau level tabel. Batasan level kolom diterapkan hanya untuk satu kolom, sedangkan batasan level tabel diterapkan ke seluruh tabel. Format penulisan kueri untuk constraint adalah sebagai berikut:
-```sql
-CREATE TABLE table_name
-  (column data type [DEFAULT expression] CONSTRAINT name_constraint_given CONSTRAINT_TYPE,
-  column data type [DEFAULT expression] CONSTRAINT name_constraint_given CONSTRAINT_TYPE ,
-……[ ] );
-```
-Keterangan:
+###3. Program to create User Interface and Server (stored in app.R)
+```R
+library(shiny)
+library("shinythemes")
+library(dplyr)
+library(Information)
+library(classInt)
+library(FSelector)
+library(randomForest)
+library(ggplot2)
+library(shinyWidgets)
+library(data.table)
+library('DT')
+source("METODE.R")
+source("PLOT.R")
+options(shiny.maxRequestSize = 30*1024^2)
+ui <- fluidPage(theme = shinytheme("flatly"),
+ title = "Kepentingan Variabel",
+ tags$head(tags$link(rel="shortcut icon", href="ipb.png")),
+ img(src='header.png',height=165,width=1320),
+ br(),
+ column(3,
+ fileInput("data", "Pilih Data", width="100%",
+ buttonLabel = "Unggah...", placeholder =
+"File belum dipilih"),
+ radioButtons("delim", "Delimiter", inline = TRUE,
+ choiceNames = c("Koma", "Spasi",
+"Titik koma"),
+choiceValues = c(",", " ", ";"), width
+= "100%"),
+ checkboxInput("header","Baris Pertama Sebagai Nama
+Kolom", value=TRUE, width = "100%"),
+ selectInput("vary", "Pilih Variabel Respon (Harus
+Biner)", choices = "", multiple = F, width = "100%"),
+ numericInput("num", label = ("Banyak Variabel yang
+Ditampilkan di Hasil"), value = 5),
+ submitButton('Proses'),
+ hr(),
+ p('Jika terdapat kendala atau pertanyaan terkait
+aplikasi ini, hubungi', tags$a(href="mailto:rgas.statipb@gmail.com",
+tags$u("rgas.statipb@gmail.com"))),
+ p('Copyright', HTML("&copy;") ,'Departemen
+Statistika IPB',style='color:blue')
+ ),
+ column(9,
+ tabsetPanel(type = "tabs",
+ tabPanel("Pratinjau Data",
+dataTableOutput("preview_dt")),
+ tabPanel("Tabel Hasil",
+dataTableOutput("gab")),
+ tabPanel("Visualisasi",
+ fluidRow(verticalLayout(
 
-Constraint | Penjelasan
----------- | -------------
-NOT NULL | Menentukan suatu kokom tidak boleh berisi NULL
-UNIQUE | Untuk mencegah suatu kolom memiliki 2 baris atau lebih berisi data yang sama
-PRIMARY KEY | Mengkombinasikan constraint NOT NULL dan UNIQUE dalam satu deklarasi. Mengidentifikasi secara unik setiap baris pada tabel
-FOREIGN KEY |Memaksakan nilai pada suatu tabel untuk bernilai sama dengan tabel lain
-CHECK | Menentukan suatu kondisi yang harus benar
+(verticalLayout((plotOutput("plots5")),
 
+tags$span(style='color:blue','Catatan: Ketinggian batang tidak menunjukkan
+nilai asli dari perhitungan masing-masing metode, melainkan menunjukkan 
+urutan peringkatnya, dimana semakin tinggi peringkat maka semakin tinggi
+pula batang.'),
 
-#### Membuat constraint r_locations
-```sql
-CREATE TABLE r_LOCATIONS (
-  postal_code NUMBER(5) CONSTRAINT r_LOCATIONS_pk PRIMARY KEY,
-  district VARCHAR2(50) NOT NULL,
-  regency VARCHAR2(50) NOT NULL,
-  province VARCHAR2(50) NOT NULL
-);
-```
-#### Membuat constraint r_customers
-```sql
-CREATE TABLE r_CUSTOMERS (
-  customer_id NUMBER(5) CONSTRAINT r_customers_pk PRIMARY KEY,
-  NIK NUMBER(16) NOT NULL,
-  phone_number NUMBER(13) NOT NULL,
-  customer_name VARCHAR2(50) NOT NULL,
-  address VARCHAR2(100) NOT NULL,
-  email VARCHAR2(50),
-  point INTEGER,
-  postal_code NUMBER(5) NOT NULL,
-  CONSTRAINT r_cust_postal_code_fk FOREIGN KEY (postal_code)
-  REFERENCES R_LOCATIONS(postal_code) ON DELETE SET NULL
-);
-```
-#### Membuat constraint r_stores
-```sql
-CREATE TABLE r_STORES (
-  store_id NUMBER(5) CONSTRAINT r_STORES_pk PRIMARY KEY,
-  phone_number NUMBER(13) NOT NULL,
-  store_name VARCHAR2(50) NOT NULL,
-  address VARCHAR2(100) NOT NULL,
-  NPWP NUMBER(15),
-  postal_code NUMBER(5) NOT NULL,
-  CONSTRAINT r_stor_postal_code_fk FOREIGN KEY (postal_code)
-  REFERENCES R_LOCATIONS(postal_code) ON DELETE SET NULL
-);
-```
-#### Membuat constraint r_employees
-```sql
-CREATE TABLE r_EMPLOYEES (
-  employee_id NUMBER(5) CONSTRAINT r_EMPLOYEES_pk PRIMARY KEY,
-  NIK NUMBER(16) NOT NULL,
-  phone_number NUMBER(13) NOT NULL,
-  employee_name VARCHAR2(50) NOT NULL,
-  address VARCHAR2(100) NOT NULL,
-  email VARCHAR2(50) NOT NULL,
-   bank_account VARCHAR2(30) NOT NULL,
-  postal_code NUMBER(5) NOT NULL,
-  store_id NUMBER(5) NOT NULL,
-  CONSTRAINT r_emps_postal_code_fk FOREIGN KEY (postal_code)
-  REFERENCES R_LOCATIONS(postal_code) ON DELETE SET NULL,
-  CONSTRAINT r_emps_store_id_fk FOREIGN KEY (store_id)
-  REFERENCES R_STORES(store_id) ON DELETE SET NULL
-);
-```
-#### Membuat constraint r_transactions
-```sql
-CREATE TABLE r_TRANSACTIONS (
-  transaction_id NUMBER(5,0) CONSTRAINT r_trx_pk PRIMARY KEY,
-  transaction_date DATE NOT NULL,
-  payment_type VARCHAR2(20) NOT NULL,
-  total_transaction INTEGER NOT NULL,
-  customer_id NUMBER(5,0),
-  employee_id NUMBER(5,0),
-  CONSTRAINT r_trx_cust_id_fk FOREIGN KEY (customer_id)
-  REFERENCES r_CUSTOMERS(customer_id) ON DELETE SET NULL,
-  CONSTRAINT r_trx_emps_id_fk FOREIGN KEY (employee_id)
-  REFERENCES r_EMPLOYEES(employee_id) ON DELETE SET NULL
-);
-```
-#### Membuat constraint r_salary_histories
-```sql
-CREATE TABLE r_SALARY_HISTORIES (
-  start_date_salary DATE NOT NULL,
-  end_date_salary DATE,
-  wages INTEGER NOT NULL,
-  description VARCHAR2(50),
-  PIC VARCHAR2(50) NOT NULL,
-  employee_id NUMBER(5) NOT NULL,
-  CONSTRAINT r_slr_emps_id_fk FOREIGN KEY (employee_id)
-  REFERENCES R_EMPLOYEES(employee_id) ON DELETE SET NULL,
-  CONSTRAINT r_slr_start_emps_id_pk PRIMARY KEY(start_date_salary,employee_id)
-);
-```
-#### Membuat constraint r_products
-```sql
-CREATE TABLE r_PRODUCTS (
-  product_id NUMBER(15) CONSTRAINT r_products_pk PRIMARY KEY,
-  product_name VARCHAR2(50) NOT NULL,
-  price DECIMAL(10,2) NOT NULL,
-  stock INTEGER NOT NULL,
-  expire_date DATE,
-  store_id NUMBER(5) NOT NULL,
-  CONSTRAINT r_prod_store_id_fk FOREIGN KEY (store_id)
-  REFERENCES R_STORES(store_id) ON DELETE SET NULL
-);
-```
-#### Membuat constraint r_items
-```sql
-CREATE TABLE r_ITEMS (
-  transaction_id NUMBER(5) NOT NULL,
-  product_id NUMBER(15) NOT NULL,
-  quantity INTEGER,
-  CONSTRAINT r_itm_trx_id_fk FOREIGN KEY (transaction_id)
-  REFERENCES R_TRANSACTIONS(transaction_id) ON DELETE SET NULL,
-  CONSTRAINT r_itm_prod_id_fk FOREIGN KEY (product_id)
-  REFERENCES R_PRODUCTS(product_id) ON DELETE SET NULL,
-  CONSTRAINT r_itm_trx_prod_id_pk PRIMARY KEY(transaction_id,product_id)
-);
-```
-#### Membuat constraint r_suppliers
-```sql
-CREATE TABLE r_SUPPLIERS (
-  supplier_id NUMBER(5) CONSTRAINT r_suppliers_pk PRIMARY KEY,
-  phone_number NUMBER(13) NOT NULL,
-  supplier_name VARCHAR2(50) NOT NULL,
-  email VARCHAR2(50) NOT NULL,
-  address VARCHAR2(100) NOT NULL,
-  postal_code NUMBER(5) NOT NULL,
-  CONSTRAINT r_suppliers_postal_code_fk FOREIGN KEY (postal_code)
-  REFERENCES R_LOCATIONS(postal_code) ON DELETE SET NULL
-);
-```
-#### Membuat constraint r_supplies
-```sql
-CREATE TABLE r_SUPPLIES (
-  supply_date DATE NOT NULL,
-  supplier_id NUMBER(5) NOT NULL,
-  product_id NUMBER(15) NOT NULL,
-  quantity INTEGER,
-  CONSTRAINT r_supplies_supplier_id_fk FOREIGN KEY (supplier_id)
-  REFERENCES R_SUPPLIERS(supplier_id) ON DELETE SET NULL,
-  CONSTRAINT r_supplies_prod_id_fk FOREIGN KEY (product_id)
-  REFERENCES R_PRODUCTS(product_id) ON DELETE SET NULL,
-  CONSTRAINT r_supplies_supplier_prod_id_pk PRIMARY KEY(supplier_id,product_id,supply_date)
-);
-```
-#### Membuat constraint r_discount_histories
-```sql
-CREATE TABLE r_DISCOUNT_HISTORIES (
-  start_date_discount DATE NOT NULL,
-  end_date_discount DATE,
-  percentage DECIMAL(4,2) NOT NULL,
-  product_id NUMBER(15) NOT NULL,
-  CONSTRAINT r_disc_prod_id_fk FOREIGN KEY (product_id)
-  REFERENCES R_PRODUCTS(product_id) ON DELETE SET NULL,
-  CONSTRAINT r_disc_start_prod_id_pk PRIMARY KEY(start_date_discount,product_id)
-);
+(downloadButton(outputId = "Gabungan", label = "Download")))),
+ splitLayout(
+ cellWidths = 400,
+ cellArgs = list(style =
+"padding: 6px"),
+(verticalLayout((plotOutput("plots1")),
+
+(downloadButton(outputId = "IV", label = "Download")))),
+
+(verticalLayout((plotOutput("plots2")),
+
+(downloadButton(outputId = "IG", label = "Download"))))),
+ splitLayout(
+ cellWidths = 400,
+ cellArgs = list(style =
+"padding: 6px"),
+
+(verticalLayout((plotOutput("plots3")),
+
+(downloadButton(outputId = "MDA", label = "Download")))),
+
+(verticalLayout((plotOutput("plots4")),
+
+(downloadButton(outputId = "MDG", label = "Download"))))
+ )))),
+ tabPanel("Panduan
+Pengguna",h4(strong('Dataset',style='color:blue')),
+ tags$ul(
+ tags$li('Format file dari
+dataset yaitu',em('comma separated value'),'(csv)'),
+tags$li('Nilai dari variabel
+respon (variabel Y) harus biner'),
+tags$span(style='color:orange','contoh:'), '"Yes" atau "No", 1 atau 0,
+"Sukses" atau "Gagal"',
+ tags$li('Tidak ada',
+tags$i('missing value'), 'pada dataset'),
+tags$span(style='color:red','Baris dengan', tags$i('missing value'),'tidak
+diikutkan dalam pembentukan model')
+ ),br(),
+h4(strong('Prosedur penggunaan
+web',style='color:blue')),
+ tags$ol(
+ tags$li('Klik "Unggah" untuk
+memilih dataset yang ingin digunakan dari direktori anda (format harus
+csv)'),
+ tags$li('Pilih delimiter
+(pembatas) dari dataset yang dipilih'),
+ tags$li('Cekllis keterangan
+"Baris Pertama Nama Kolom" apabila baris pertama pada dataset merupakan
+nama kolom atau nama variabel'),
+ tags$li('Pada tab "Pratinjau
+Data", akan ditampilkan 6 baris pertama dari dataset'),
+tags$li('Pilih variabel yang
+akan dijadikan variabel respon. Nilai dari variabel harus biner (contoh:
+"Yes" atau "No", 1 atau 0, "Sukses" atau "Gagal")'),
+ tags$li('Pilih banyak
+variabel prediktor teratas yang ingin ditampilkan pada hasil. (Nilai
+default = 5 variabel)'),
+ tags$li('Klik "Proses" untuk
+melakukan proses perhitungan',em('Genetic Algorithm')),
+tags$li('Pada tab "Tabel
+Hasil", akan ditampilkan tabel berisi nilai-nilai dari
+perhitungan',em('Information Value, Information Gain, Mean Decrease Gini,
+Mean Decreas Accuracy,'), 'dan', em('Genetic Algorithm.'),'Nilai
+kepentingan diurutkan dari yang terbesar hingga terkecil berdasarkan
+proses dari', em('Genetic Algorithm')),
+ tags$li('Pada tab
+"Visualisasi", akan ditampilkan', em('Bar Plot'), 'berdasarkan hasil
+perhitungan', em('Genetic Algorithm')),
+ tags$li('Klik "Download"
+untuk mengunduh plot yang diinginkan')
+ )),
+ tabPanel("Tentang Aplikasi",p('Aplikasi
+ini disusun untuk membantu pengguna dalam mengidentifikasi tingkat
+kepentingan variabel yang akan dilibatkan pada suatu pemodelan
+klasifikasi. Terdapat empat ukuran', tags$i('(metric)'), 'yang digunakan
+dalam mengukur tingkat kepentingan variabel tersebut yaitu'),
+ p(em('- Information
+Value')),p(em('- Information Gain')),p(em('- Mean Decrease
+Accuracy')),p(em('- Mean Decrease Gini')),
+ p('Karena terdapat 4 (empat)
+macam', tags$i('metric,'), 'sangat mungkin antar ukuran ini berbeda urutan
+tingkat kepentingannya. Suatu variabel dapat saja menjadi yang paling
+tinggi di suatu ukuran, namun hanya menempati peringkat ketiga berdasarkan
+ukuran yang lain.'),
+ p('Pada aplikasi ini,
+diberikan urutan/peringkat tingkat kepentingan secara global dengan
+memperhatikan keempat ukuran yang digunakan. Teknik',
+tags$i(strong('Genetic Algorithm')), 'digunakan untuk mendapatkan
+peringkat global yang optimum, sehingga peringkat tersebut memiliki
+tingkat kesetujuan yang besar dengan semua',em('metric'), 'yang
+digunakan.'),
+ p(em('Genetic
+Algorithm'),'merupakan teknik optimasi yang bekerja dengan meniru proses
+evolusi makhluk hidup. Algoritma ini bekerja dalam beberapa tahapan yang
+berulang sampai konvergen yaitu:'),
+ p('- Pembangkitan
+populasi'),p('- Seleksi individu terbaik'),p('- Mutasi gen'),p('- Kawin
+silang'),
+ p('Pada aplikasi ini, individu
+pada', em('Genetic Algorithm'), 'adalah urutan tingkat kepentingan 
+variabel yang berbentuk gen sebanyak variabel prediktor. Fungsi objektif
+atau', em('fitness value'), 'yang digunakan adalah rata-rata korelasi dan
+minimum korelasi antara urutan dengan empat buah', em('metric'), 'yang
+telah disebutkan sebelumnya.'),
+ br(),
+p('Penjelasan lebih detail
+dari masing-masing', em('metric'), 'tingkat kepentingan variabel adalah
+sebagai berikut.'),
+ p(strong(em('Information
+Value'))),
+ p('Istilah', em('Information
+Value'), '(IV) tidak dapat dipisahkan dengan istilah', em('Weight of
+Evidence'), '(WoE), dimana WoE menggambarkan hubungan antara prediktor dan
+variabel dependen biner, sementara IV merupakan ukuran kekuatan hubungan
+tersebut.'),
+ p(strong(em('Information
+Gain'))),
+p(em('Information Gain'),
+'(IG) biasanya digunakan dalam membangun', em('decision tree'), 'dari
+dataset latih, dengan mengevaluasi nilai IG untuk tiap variabelnya, dan
+memilih variabel yang memaksimumkan nilai IG, yang selanjutnya akan
+meminimumkan entropi sehingga akan ditentukan pembagi terbaik', em('(best
+splits)'), 'dataset menjadi grup untuk klasifikasi yang efektif. IG juga
+dapat dijadikan sebagai indikator dalam seleksi fitur, dengan mengevaluasi
+nilai', em('gain'), 'tiap variabel prediktor terhadap variabel dependen.
+Perhitungannya mengacu pada', em('mutual information'), 'antara dua
+variabel.'),
+ p(strong(em('Mean Decrease
+Accuracy'),'(MDA) dan', em('Mean Decrease Gini'), '(MDG)')),
+p('MDA dan MDG merupakan nilai
+yang dihasilkan melalui adanya proses metode', em('Random Forest'),'. Pada
+MDA, nilainya ditentukan selama fase kalkulasi eror. Semakin berkurang
+akurasi dari', em('random forest'), 'yang disebabkan oleh suatu variabel,
+semakin penting pula variabel tersebut untuk dipertimbangkan. Oleh karena
+itu, variabel dengan nilai MDA yang tinggi dapat dikatakan memiliki
+peranan yang penting dalam klasifikasi. Sementara itu, MDG merupakan nilai
+ukuran seberapa besar kontribusi suatu variabel pada homogenitas',
+em('enodes'), 'dan', em('leaves'), 'dalam menghasilkan', em('random
+forest'),'. Setiap kali variabel tertentu digunakan untuk
+membagi',em('node'),', koefisien Gini untuk', em('child nodes'), 'akan
+dihitung dan dibandinkan dengan', em('original nodes'),'. Koefisien Gini
+adalah ukuran homogenitas dengan rentang 0 (homogen) hingga 1 (heterogen).
+Perubahan dalam Gini dijumlahkan untuk setiap variabel dan dinormalisasi
+pada akhir perhitungan. Variabel yang menghasilkan',em('node'), 'dengan
+kemurnian',em('(purity)'),'lebih tinggi memiliki MDG yang lebih tinggi.'),
+ br(),
+p('Dengan adanya nilai
+kepentingan variabel berdasarkan perhitungan metode',
+tags$i(strong('Genetic Algorithm')),', pengguna dapat menentukan variabel
+prediktor mana saja yang relevan atau yang memiliki pengaruh tinggi
+terhadap variabel respon, sehingga dapat dijadikan acuan dalam menyeleksi
+variabel prediktor.'),
+ p(strong('R-GAS V
+1.0',style='color:blue'), align='center'),
+ p(strong('Agustus
+2020',style='color:blue'), align='center')
+ ),
+tabPanel("Pengembang",h3('Tim
+Pengembang',align='center'),
+ br(),h4('Pembimbing',
+align='center'),
+fluidRow(verticalLayout(splitLayout(cellWidths = 330,
+
+cellArgs = list(style = "padding: 6px"),
+
+p(h3(img(src='bagus.png',height=100,width=100), align='center'), h5('Bagus
+Sartono', align='center')),
+p(h3(img(src='rahma-anisa.png',height=100,width=100), align='center'),
+h5('Rahma Anisa', align='center')),
+
+p(h3(img(src='farit.png',height=100,width=100), align='center'), h5('Farit
+M. Afendi', align='center'))),
+
+br(),h4('Pelaksana', align='center'),
+splitLayout(cellWidths = 330,
+
+cellArgs = list(style = "padding: 6px"),
+
+p(h3(img(src='abdullah.png',height=100,width=100), align='center'),
+h5('Abdullah Fadly', align='center')),
+
+p(h3(img(src='retno.png',height=100,width=100), align='center'), h5('Retno
+Wahyuningsih', align='center')),
+
+p(h3(img(src='ismail.png',height=100,width=100), align='center'),
+h5('Achmad Ismail Mufrodi', align='center')))
+ )))
+ )
+ )
+)
+server <- function(input,output,session) {
+
+ dfn<-reactive({
+ if(is.null(input$data)){
+ return(NULL)
+ } else {
+ read.csv(input$data$datapath, header = input$header, sep =
+input$delim)
+ }
+ })
+
+ observe({
+ updateSelectInput(session,"vary","Pilih Variabel Respon (Harus
+Biner)", choices = names(dfn()))
+ 
+ })
+
+ imp <- reactive({
+ claim <- na.omit(dfn())
+ getmode <- function(v) {
+ uniqv <- unique(v)
+ uniqv[which.max(tabulate(match(v, uniqv)))]
+ }
+ modus <- getmode(claim[,input$vary])
+ l <- length(unique(claim[,input$vary]))
+ if (l > 2){
+ showModal(modalDialog("Variabel Respon Harus Biner"))
+ }
+ else if(modus != 0 || modus != 1){
+ claim[,input$vary] <- ifelse(claim[,input$vary] == modus, 0 ,1)
+ }
+ claim
+ })
+
+ imp2 <- reactive({
+ claim2 <- na.omit(dfn())
+ varx <- setdiff(colnames(claim2),input$vary)
+ for (i in varx){
+ claim2[,i] <- as.numeric(claim2[,i])
+
+ eqwidth <- classIntervals(claim2[,i], style = 'equal', 2)
+ claim2[,i] <- cut(claim2[,i], breaks = eqwidth$brks)
+ }
+ claim2
+ })
+
+imp3 <- reactive({
+ claim3<- na.omit(dfn())
+ claim3[,input$vary] <- as.factor(claim3[,input$vary])
+ Variable <- setdiff(colnames(claim3),input$vary)
+ claim3
+ })
+
+ output$preview_dt <- renderDataTable({
+ if(is.null(input$data)){
+ return(NULL)
+ } else {
+ dfn <- dfn()
+ dfn
+ }
+ })
+
+ result <- reactive({
+ set.seed(43)
+ IV <- iv(imp(), inputvary = input$vary)
+ MDGMDA<- mdgmda(data = imp3(), inputvary = input$vary)
+ IG <- ig(data = imp2(), inputvary = input$vary)
+
+ result <- merge(IV,IG,by = "Variable")
+ result <- merge(result, MDGMDA, by = "Variable")
+
+ skor1 <- (result[,2])
+ skor2 <- as.numeric(result[,3])
+ skor3 <- (result[,4])
+ skor4 <- (result[,5])
+
+ ngitung.korelasi <- function(x){
+ k <- nrow(x)
+ kor <- NULL
+ for (j in 1:k){
+ kor <- c(kor, min(c(cor(x[j,], skor1), cor(x[j,], skor2),
+ cor(x[j,], skor3), cor(x[j,], skor4))))
+ }
+ return(kor)
+ }
+
+ n <- length(skor1)
+ npop <- 10
+ populasi <- NULL
+ for (i in 1:npop){
+ populasi <- rbind(populasi,sample(1:n, n))
+ }
+
+ kawin <- function(x, batas, semua){
+ hasilkawin <- x
+ k <- nrow(x)
+ for (ii in 1:(k-1)){
+ for (jj in (ii+1):k){
+ ayah <- x[ii,]
+ ibu <- x[jj,]
+ anak1 <- c(ayah[1:batas],ibu[(batas+1):semua])+runif(semua,-
+0.2,0.2)
+ anak2 <- c(ibu[1:batas],ayah[(batas+1):semua])+runif(semua,-
+0.2,0.2)
+ anak1 <- rank(anak1)
+ anak2 <- rank(anak2)
+ hasilkawin <- rbind(hasilkawin, anak1, anak2)
+ }
+ }
+ return(hasilkawin)
+ }
+ mutasi <- function(x){
+ hasilmutasi <- x + replicate(ncol(x), runif(nrow(x),-0.8,0.8))
+ for (kk in 1:nrow(hasilmutasi)){
+ hasilmutasi[kk,]=rank(hasilmutasi[kk,])
+ }
+ return(hasilmutasi)
+ }
+ tujuanterbaik <- NULL
+ for (generasi in 1:100){
+ tujuan <- ngitung.korelasi(populasi)
+ terpilih <- populasi[order(tujuan, decreasing=T)[1:5],]
+ populasi <- kawin(terpilih, 4,length(skor1))
+ tujuanterbaik[generasi] <- (tujuan[order(tujuan, decreasing=T)[1]])
+ populasi <- mutasi(populasi)
+ }
+ tujuan <- ngitung.korelasi(populasi)
+ terbaik <- populasi[order(tujuan, decreasing=T)[1],]
+ urutanterbaik <- n - terbaik + 1
+ GA <- order(urutanterbaik)
+ tujuan[order(tujuan, decreasing=T)[1]]
+ result <- cbind(result, urutanterbaik)
+ result <- result[order(urutanterbaik, decreasing = F),]
+ colnames(result) <- c("Variabel", "Information Value", "Information
+Gain", "Mean Decrease Accuracy", "Mean Decrese Gini", "Peringkat Genetic
+Algorithm")
+
+ n <- length(skor1)
+ if ((0 < input$num) & (input$num < n+1)){
+ result <- result[1:input$num,]
+ }
+ else {
+ showModal(modalDialog(h2("Proses tidak dapat dijalankan"), "Banyak
+variabel prediktor pada dataset:", n, "variabel", sep=""))
+ }
+ })
+
+ # ===== PLOT GAB =====#
+ plotInput5 <- reactive({
+ if(is.null(input$data ))
+ {return(NULL)}
+ else{result <- result()
+ plotgab(result)}
+ })
+ output$plots5 <- renderPlot({
+ print(plotInput5())
+ })
+ output$Gabungan <- downloadHandler(
+ filename = function(){
+ paste("Kepentingan Variabel", ".png", sep="")
+ },
+ content = function(file){
+ device <- function(..., width, height) grDevices::png(..., width =
+width, height = height, res = 300, units = "in")
+ ggsave(file,plot = plotInput5(), device = device)
+ }
+ )
+
+ # ===== PLOT IV =====#
+ plotInput1 <- reactive({
+ if(is.null(input$data))
+ {return(NULL)}
+ else{result <- result()
+ plotiv(result)}
+ })
+ output$plots1 <- renderPlot({
+ print(plotInput1())
+ })
+ output$IV <- downloadHandler(
+ filename = function(){
+ paste("IV", ".png", sep="")
+ },
+ content = function(file){
+ device <- function(..., width, height) grDevices::png(..., width =
+width, height = height, res = 300, units = "in")
+ ggsave(file,plot = plotInput1(), device = device)
+ }
+ )
+
+ # ===== PLOT IG =====#
+ plotInput2 <- reactive({
+ if(is.null(input$data))
+ {return(NULL)}
+ else{result <- result()
+ plotig(result)}
+ })
+ output$plots2 <- renderPlot({
+ print(plotInput2())
+ })
+ output$IG <- downloadHandler(
+ filename = function(){
+ paste("IG", ".png", sep="")
+ },
+ content = function(file){
+ device <- function(..., width, height) grDevices::png(..., width =
+width, height = height, res = 300, units = "in")
+ ggsave(file,plot = plotInput2(), device = device)
+ }
+ )
+
+ #==== PLOT MDA ====#
+ plotInput3 <- reactive({
+ if(is.null(input$data))
+ {return(NULL)}
+ else{result <- result()
+ plotmda(result)}
+ })
+ output$plots3 <- renderPlot({
+ print(plotInput3())
+ })
+ output$MDA <- downloadHandler(
+ filename = function(){
+ paste("MDA", ".png",sep = "")
+ },
+ content = function(file){
+ device <- function(..., width, height) grDevices::png(..., width =
+width, height = height, res = 300, units = "in")
+ ggsave(file,plot = plotInput3(), device = device)
+ }
+ )
+ 
+ #==== Plot MDG ====#
+ plotInput4 <- reactive({
+ if(is.null(input$data))
+ {return(NULL)}
+ else{result <- result()
+ plotmdg(result)}
+ })
+ output$plots4 <- renderPlot({
+ print(plotInput4())
+ })
+
+ output$MDG <- downloadHandler(
+ filename = function(){
+ paste("MDG", ".png",sep = "")
+ },
+ content = function(file){
+ device <- function(..., width, height) grDevices::png(..., width =
+width, height = height, res = 300, units = "in")
+ ggsave(file,plot = plotInput4(), device = device)
+ }
+ )
+
+ output$gab <- renderDataTable({
+ if(is.null(input$data))
+ {return(NULL)}
+ else{
+ withProgress(message = 'Proses sedang berjalan...',
+ value = 1.0,{
+ result <- result()
+ })
+ n <- nrow(result)
+ if ((0 < input$num) & (input$num < n+1)){
+ result <- result[1:input$num,]
+ }
+ else {
+ showModal(modalDialog(h2("Proses tidak dapat dijalankan"), "Banyak
+variabel prediktor pada dataset:", n, "variabel", sep="", footer =
+modalButton('Tutup')))
+ }
+ if(!is.null(result)){
+ showModal(modalDialog("Proses berhasil",footer =
+modalButton('Tutup')))
+ return(result)
+ }
+ }
+ },
+ options=list(dom='ft')
+ )
+}
+shinyApp(ui,server)
 ```
 
-### 3. Create Views
-View dapat digunakan untuk memudahkan pengguna yang bukan seorang DBA dalam menggunakan query. Berikut adalah syntax penggunaan views.
-```sql
-CREATE [OR REPLACE] [FORCE|NOFORCE] VIEW view_name [(alias[,alias...])] AS subquery
-[WITH CHECK OPTION [CONSTRAINT constraint]]
-[WITH READ ONLY [CONSTRAINT constraint]]
-```
-
-Berikut adalah salah satu contoh penggunaan view. View di bawah ini digunakan untuk menampilkan nama toko, daftar produk, stok, tanggal kedaluarsa, dan supplier produk-produk yang stoknya tinggal sedikit atau produk yang akan segera kedaluarsa.
-![Image of view-1](https://github.com/hendrikaang/FGA2021-UI-Database2-Kel6/blob/main/view-1.png)
-```sql
-CREATE OR REPLACE VIEW view_warehouse_problem
-	AS SELECT s.store_name AS "Toko", 
-  p.product_name AS "Produk", 
-  p.stock AS "Stok", 
-  p.expire_date AS "Kedaluarsa", 
-  s.supplier_name AS "Supplier"
-FROM r_products p, r_stores s, r_suppliers s, r_supplies supply
-WHERE 
-	p.store_id = s.store_id AND
-	p.product_id = supply.product_id AND
-	supply.supplier_id = s.supplier_id AND 
-	(p.expire_date >= (SYSDATE + 30) OR p.stock <= 1000);
-```
-
-### 4. Create Sequences
-Sequence biasa digunakan untuk membuat penomoran otomatis. Berikut adalah syntax pembuatan sequence.
-```sql
-CREATE SEQUENCE sequence_name
-[INCREMENT BY n]
-[START WITH n]
-[MAXVALUE n | NOMAXVALUE]
-[MINVALUE n | NOMINVALUE]
-[CYCLE | NOCYCLE]
-[CACHE | NOCACHE]
-```
-Di dalam project ini, sequence digunakan untuk membantu memberi id untuk tabel r_transactions, r_customers, r_employees, r_stores, r_suppliers. Berikut adalah kode yang digunakan.
-```sql
-CREATE SEQUENCE transaction_id_seq
-INCREMENT BY 1
-START WITH 1
-NOMAXVALUE
-NOCYCLE;
-CREATE SEQUENCE people_id_seq;
-CREATE SEQUENCE store_id_seq;
-CREATE SEQUENCE supplier_id_sed;
-```
-
-### 5. Add Data to Tables
-Untuk menambahkan data ke dalam tabel, digunakan perintah INSERT. Insert memiliki syntax yang cukup mudah untuk memasukkan data satu-persatu. Untuk memasukkan data beberapa baris sekaligus, syntaxnya sedikit berbeda. Berikut adalah syntax insert untuk menambahkan 1 baris data.
-```sql
-INSERT INTO table_name
-	(column_name_1, column_name_2,...)
-VALUES
-	(value_column_1, value_column_2,...);
-```
-Ada banyak data contoh yang kami masukkan, cara menginputnnya pun juga beragam:
-#### Cara 1
-Caranya yaitu hanya menyertakan konten barisnya tanpa menuliskan kolom-kolomnya. Cara yang pertama ini cukup tidak direkomendasikan karena kita harus tahu betul bagaimana database disimpan di dalam sistem. Kita harus tahu pasti bagaimana urutannya dan ketentuan-ketentuannya.
-```sql
-INSERT INTO r_stores
-VALUES
-	(sre_seq.NEXTVAL, 085282731008, 'Stasiun Depok', 'GGS, Jl. St. Depok Lama, Depok', 092542943407000, 16431);
-
-INSERT INTO r_salary_histories
-VALUES
-	('01-Aug-2021', '31-Jul-2023', 2100000, NULL, 'big boss', 1);
-```
-#### Cara 2
-Caranya mirip dengan cara 1 namun dengan menuliskan kolom-kolomnya. Cara ini lebih direkomendasikan untuk memasukkan data satu-persatu ke dalam sistem. Juga dengan cara ini, kita bisa menggunakan sequence di dalamnya.
-```sql
--- Memasukkan data employee
-INSERT INTO r_employees
-	(employee_id, nik, phone_number, employee_name, address, email, bank_account, postal_code, store_id)
-VALUES
-	(ppe_seq.NEXTVAL, 6273140804002001, 085246821145, 'Budi Susilawati', 'Jl. Raya Pajajaran No.102, RT.03/RW.12, Bantarjati', 'bs@gmail.com', 114359842555732, 16153, 1);
-
--- Memasukkan data customer
-INSERT INTO r_customers (customer_id, nik, phone_number, customer_name, address, email, point, postal_code)
-VALUES (ppe_seq.NEXTVAL, 3173050501000007, 085200827199,' Tania Karantina', 'Jl. Pitara No.96, RW.15, Pancoran MAS', 'takar@gmail.com', 0, 16436);
-INSERT INTO r_customers (customer_id, nik, phone_number, customer_name, address, email, point, postal_code)
-VALUES (ppe_seq.NEXTVAL, 3263131101998003, 081358923850, 'Salma Covidah', 'Jl. Matraman, Ratu Jaya', 'salma_cov@gmail.com', 0, 16439);
-INSERT INTO r_customers (customer_id, nik, phone_number, customer_name, address, email, point, postal_code)
-VALUES (ppe_seq.NEXTVAL, 6273140804002001, 087365900932, 'Maskur Yudhistira', 'Ruko Verbena D-16, Jl. Boulevard Grand Depok City, Tirtajaya', 'mas_yudhi@gmail.com', 103, 16412);
-
--- Memasukkan data supplier
-INSERT INTO r_suppliers
-	(supplier_id, phone_number, supplier_name, email, address, postal_code)
-VALUES
-	(spr_seq.NEXTVAL, 085246821145, 'Budi Susilawati', 'bs@gmail.com', 'Jl. Raya Pajajaran No.102, RT.03/RW.12, Bantarjati', 16153);
-
--- Memasukkan data histori diskon
-INSERT INTO r_discount_histories
-	(start_date_discount, end_date_discount, percentage, product_id)
-VALUES
-	('20-Sep-2021', '21-Sep-2021', 20, 8998009010590);
-
--- Memasukkan data supplies
-INSERT INTO r_supplies
-	(supply_date, supplier_id, product_id, quantity)
-VALUES
-	('20-Sep-2021', 1, 8998009010590, 240);
-
--- Memasukkan data transaksi
-INSERT INTO r_transactions (transaction_id, transaction_date, payment_type, total_transaction, customer_id, employee_id)
-VALUES (trx_seq.NEXTVAL, TO_DATE('07-Sep-2021', 'dd-Mon-yyyy'), 'cash', 58500, 2, 1);
-INSERT INTO r_transactions (transaction_id, transaction_date, payment_type, total_transaction, customer_id, employee_id)
-VALUES (trx_seq.NEXTVAL, TO_DATE('07-Sep-2021', 'dd-Mon-yyyy'), 'cash', 79800, 4, 1);
-INSERT INTO r_transactions (transaction_id, transaction_date, payment_type, total_transaction, customer_id, employee_id)
-VALUES (trx_seq.NEXTVAL, TO_DATE('14-Sep-2021', 'dd-Mon-yyyy'), 'cash', 460000, 3, 1);
-INSERT INTO r_transactions (transaction_id, transaction_date, payment_type, total_transaction, customer_id, employee_id)
-VALUES (trx_seq.NEXTVAL, TO_DATE('14-Sep-2021', 'dd-Mon-yyyy'), 'cash', 120000, 2, 1);
-```
-#### Cara 3
-Cara ini digunakan untuk memasukkan *multirow data* sehingga kita bisa memasukkan beberapa baris data sekaligus. Caranya dengan menggunakan bantuan tabel DUAL. Apabila kita mau menggunakan cara ini, kita jadi tidak bisa menggunakan sequence.
-```sql
-INSERT INTO r_locations (postal_code, district, regency, province)
-	WITH location AS ( 
-		SELECT 16436, 'Pancoran Mas', 'Kota Depok', 'Jawa Barat' FROM dual UNION ALL 
-		SELECT 16439, 'Cipayung', 'Kota Depok', 'Jawa Barat' FROM dual UNION ALL 
-		SELECT 16412, 'Sukmajaya', 'Kota Depok', 'Jawa Barat' FROM dual UNION ALL 
-		SELECT 16431, 'Pancoran Mas', 'Kota Depok', 'Jawa Barat' FROM dual UNION ALL
-		SELECT 16153, 'Bogor Utara', 'Kota Bogor', 'Jawa Barat' FROM dual
-    ) 
-	SELECT * FROM location;
-
-INSERT INTO r_products
-	(product_id, product_name, price, stock, expire_date, store_id)
-	WITH product AS (
-		SELECT 8997019580772, 't-soft tissue 200', 3400, 500, TO_DATE('21-07-2024', 'dd-mm-yyyy'), 1 FROM dual UNION ALL
-		SELECT 4902430403856, 'oral-b soft 3', 12500, 100, TO_DATE('19-11-2026', 'dd-mm-yyyy'), 1 FROM dual UNION ALL
-		SELECT 8997213160114, 'beleaf soap 90gr', 8400, 96, TO_DATE('22-06-2023', 'dd-mm-yyyy'), 1 FROM dual UNION ALL
-		SELECT 8996001305126, 'arden cookies 300gr', 16000, 240, TO_DATE('06-03-2022', 'dd-mm-yyyy'), 1 FROM dual UNION ALL
-		SELECT 8998866500388, 'teh rio 180ml', 1000, 1000, TO_DATE('02-11-2021', 'dd-mm-yyyy'), 1 FROM dual UNION ALL
-		SELECT 8991102222006, 'teh gelas 160ml', 1000, 1200, TO_DATE('06-08-2022', 'dd-mm-yyyy'), 1 FROM dual UNION ALL
-		SELECT 6971174324619, 'alkindo mask 50', 21000, 85, TO_DATE('30-12-2024', 'dd-mm-yyyy'), 1 FROM dual UNION ALL
-		SELECT 8999809700032, 'vicee vit c 500gr', 2500, 240, TO_DATE('01-07-2023', 'dd-mm-yyyy'), 1 FROM dual UNION ALL
-		SELECT 8998009010590, 'ultramilk coklat 125ml', 3500, 120, TO_DATE('17-11-2020', 'dd-mm-yyyy'), 1 FROM dual UNION ALL
-		SELECT 8993175549820, 'nabati raspberry yoghurt 132gr', 6000, 120, TO_DATE('09-07-2022', 'dd-mm-yyyy'), 1 FROM dual
-	)
-	SELECT * FROM product;
-
-INSERT INTO r_items
-	(transaction_id, product_id, quantity)
-	WITH items AS (
-		SELECT 1, 8997019580772, 10 FROM dual UNION ALL
-		SELECT 1, 4902430403856, 1 FROM dual UNION ALL
-		SELECT 1, 8993175549820, 2 FROM dual UNION ALL
-		SELECT 2, 8997213160114, 2 FROM dual UNION ALL
-		SELECT 2, 6971174324619, 3 FROM dual UNION ALL
-		SELECT 3, 8999809700032, 24 FROM dual UNION ALL
-		SELECT 3, 6971174324619, 5 FROM dual UNION ALL
-		SELECT 3, 8998009010590, 50 FROM dual UNION ALL
-		SELECT 3, 8998866500388, 120 FROM dual UNION ALL
-		SELECT 4, 8993175549820, 20 FROM dual
-	)
-	SELECT * FROM items;
-```
-
-### 6. Create Indexes
-Pada database, index merupakan sebuah struktur data yang berisi kumpulan keys beserta referensinya ke actual data di table. Tujuannya untuk memepercepat proses penentuan lokasi data tanpa melakukan pencarian secara penuh pada keseluruh data (full scan). Format penulisan kueri untuk index adalah sebagai berikut:
-```sql
-CREATE INDEX nama_index ON nama_tabel(nama_field1,nama_field2,…);
-```
-Pada tabel discount_history yang telah dibuat, akan ditambahkan index dengan kueri sebagai berikut:
-```sql
-CREATE INDEX discount_idx ON r_discount_histories(start_date_discount,end_date_discount);
-```
-
-### 7. Create Synonyms
-Synonim adalah obyek-obyek database yang memungkinkan untuk memanggil suatu tabel dengan nama lain. Create synonym berguna untuk menganti atau menyingkat nama yang sulit diingat dari sebuah objek. User dapat mengakses data pada tabel yang berisis informasi yang sensitif dan privat melalui synonym tanpa harus mengetahui nama tabel aslinya.
-Format penulisan kueri untuk synonim adalah sebagai berikut:
-```sql
-CREATE [OR REPLACE] [PUBLIC] SYNONYM  nama_synonim FOR  nama_schema.object;
-```
-Pada database yang telah dibuat, akan ditambahkan synonym dengan kueri sebagai berikut:
-```sql
-CREATE SYNONYM  trx_seq FOR  transaction_id_seq;
-CREATE SYNONYM  ppe_seq FOR people_id_seq;
-CREATE SYNONYM  sre_seq FOR store_id_seq;
-CREATE SYNONYM  spr_seq FOR supplier_id_sed;
-```
-
-### 8. Test Database
-Test Num | Date | Test Description | Input | Expected Output | Result
--------- | ---- | ---------------- | ----- | --------------- | ------
-1 | 12/09/2021 | Confirm NOT NULL constraint on postal_code in r_locations | INSERT INTO r_locations (postal_code, district, regency, province) VALUES (NULL, 'Bogor Utara', 'Kota Bogor', 'Jawa Barat'); | Cannot insert NULL | ORA-01400: cannot insert NULL into ("ID_A848_SQL_S02"."R_LOCATIONS"."POSTAL_CODE
-2 | 12/09/2021 | Confirm PRIMARY KEY constraint on EMPLOYEE_ID in EMPLOYEES table where data value  must be unique and not null | INSERT INTO EMPLOYEES (EMPLOYEE_id) VALUES(NULL) \n INSERT INTO EMPLOYEES(EMPLOYEE_id) VALUES(‘JB01’) | Cannot insert NULL and non-uniqe value | ORA-01400: cannot insert NULL into ("ID_A848_SQL_S02"."EMPLOYEES"."EMPLOYEE_ID") \n ORA-00001: unique constraint (ID_A848_SQL_S02.EMPLOYEE_ID_PK) violated
-3 | 12/09/2021 | Confirm  FOREIGN KEY constraint using ON DELETE CASCADE option on postal_code in STORE tabl from postal_code as parent table | DELETE FROM postal_code WHERE postal_code='OX9 9ZB' | Deleted province province_id value in the postal code is also deleted in STORES table are deleted | postal_code= 'OX9 9ZB' deletd in STORES table
-4 | 12/09/2021 | Display PRODUCTS information |  SELECT  * from ITEMS  \n   SELECT * from SUPPLIES | item product  \n  information displayed, supplies product information displayed | item product information displayed  \n  supplie product information displayed
-6 | 12/09/2021 | Display view view_warehouse_problem | SELECT * from view_warehouse_problem | View view_warehouse_problem | View view_warehouse_problem displayed
-7 | 12/09/2021 | Display discount history information by using index discount_histories | select * from all_indexes where table_name = 'r_discount_histories' ; | discount history information | discount history information
-
-### Source Code
-Seluruh script *Minimarket database* untuk ORACLE database tersedia [di sini](https://github.com/hendrikaang/FGA2021-UI-Database2-Kel6/blob/main/DPproject.sql)
