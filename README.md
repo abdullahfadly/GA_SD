@@ -30,6 +30,7 @@ This WebApps is using an optimization approach to obtain the rank of the importa
 
 ### II. WebApps Overview 
 ![](OVIMP Overview.gif)
+
 You can see the apps on this link: http://shiny.stat.ipb.ac.id/bagusco/ovimp/
 
 ### III. Program for calculating methods (stored in METODE.R)
