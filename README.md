@@ -8,13 +8,14 @@
 - Rahma Anisa
 
 #### Table of content:
-* Intorduction
-* 1. Program for calculating methods
-* 2. Programs for displaying visualizations
-* 3. Program to create User Interface and Server
-* 4. Web Apps Overview
+* I. Intorduction
+* II. Web Apps Overview
+* III. Program for calculating methods
+* IV. Programs for displaying visualizations
+* V. Program to create User Interface and Server
 
-## Introduction
+
+## I. Introduction
 One primary question in a statistical modeling, as well as in a supervised machine learning study, is about the contribution of each explanatory variable in the model.  The topic about the variable importance has been received a huge consideration especially when the analyst was interested in revealing which variables are the most important in affecting the change in the response variable of the regression model or determining the class of the response variable of the classification model.  This present paper would focus on a binary classification problem, rather than regression model, therefore the response variable has only two classes.
 
 There are several different approaches to identify the importance of an explanatory variables in a classification model.  We call the methods to measure of this as the variable importance measurements (VIM’s).   Even though it is not completely true, some discussions about variable importance is overlapping with the discussions on variables/features selection.  It is because in a certain circumstance, the result of identifying variable importance could be used as an input to do the variable selection.
@@ -27,7 +28,11 @@ With the abundance of alternatives in determining the variable importance, analy
 
 This WebApps is using an optimization approach to obtain the rank of the importance of the explanatory variables based on several different VIM’s.  The basic idea is to find an arrangement of ranks that agrees to all VIM’s under interest as much as possible.  We employ genetic algorithm and simulated annealing methodology to result that optimal arrangement.  By applying this optimal approach, the analyst would end up with a single rank and be easier to conclude the result or to use it for a follow-up analysis.  Therefore, it sounds to unify several VIM’s into a single measurement.
 
-### 1. Program for calculating methods (stored in METODE.R)
+### II. WebApps Overview 
+![ Alt text](OVIMP Overview. gif) / ! [](OVIMP Overview. gif)
+You can see the apps on this [link] (http://shiny.stat.ipb.ac.id/bagusco/ovimp/)
+
+### III. Program for calculating methods (stored in METODE.R)
 ```R
 iv <- function(data, inputvary){
 
@@ -60,7 +65,7 @@ proximity = TRUE, importance = TRUE, nodesize =
 }
 ```
 
-###2. Programs for displaying visualizations (stored in PLOT.R)
+###IV. Programs for displaying visualizations (stored in PLOT.R)
 ```R
 plotgab <- function(data){
  colnames(data) <- c("Variabel", "IV", "IG", "MDA", "MDG", "GA")
@@ -173,7 +178,7 @@ Decrease Gini')+
 ```
 
 
-###3. Program to create User Interface and Server (stored in app.R)
+###V. Program to create User Interface and Server (stored in app.R)
 ```R
 library(shiny)
 library("shinythemes")
